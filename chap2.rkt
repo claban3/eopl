@@ -1,3 +1,4 @@
+(require (lib "eopl.ss" "eopl"))
 ; ---------- Exercise 2.1 ----------
 (define zero (lambda () 0))
 (define is-zero? (lambda (n) (zero? n)))
@@ -110,3 +111,100 @@
         (extend-env* `(d e f) `(4 5 6)
             (empty-env))))
 ; (display (apply-env e `w)) (newline)
+
+; ---------- Exercise 2.19 ----------
+(define number->bintree
+    (lambda (n)
+        (list n `() `())))
+
+(define current-element
+    (lambda (tree)
+        (car tree)))
+
+(define insert-to-right
+    (lambda (n tree)
+        (let ((root (car tree))
+            (left-tree (cadr tree))
+            (right-tree (list n (caddr tree) `())))
+        (list root left-tree right-tree))))
+
+(define insert-to-left
+    (lambda (n tree)
+        (let ((root (car tree))
+            (left-tree (list n (cadr tree) `()))
+            (right-tree (caddr tree)))
+        (list root left-tree right-tree))))
+
+(define move-to-left
+    (lambda (tree)
+        (cadr tree)))
+
+(define move-to-right
+    (lambda (tree)
+        (caddr tree)))
+
+(define at-leaf? 
+    (lambda (tree)
+        (and
+            (eqv? `() (move-to-left tree))
+            (eqv? `() (move-to-right tree)))))
+
+(define t1 (insert-to-right 14 (insert-to-left 15 (number->bintree 13))))
+
+; (display (number->bintree 13))(newline)
+; (display t1)(newline)
+; (display (move-to-right t1))(newline)
+; (display (at-leaf? t1))(newline)
+; (display (at-leaf? (move-to-left t1)))(newline)
+
+; ---------- Exercise 2.22 ----------
+(define-datatype stack-type is-stack?
+    (empty-stack)
+    (push (datum always?)
+          (saved-stack is-stack?)))
+
+(define top
+    (lambda (stack)
+        (cases stack-type stack
+            (push (datum saved-stack) datum)
+            (empty-stack () (error "Cannot take top of empty stack")))))
+
+(define pop
+    (lambda (stack)
+        (cases stack-type stack
+            (push (datum saved-stack) saved-stack)
+            (empty-stack () (error "Cannot pop empty stack")))))
+
+(define stack (push 2 (push 1 (empty-stack))))
+; (display (top stack)) (newline)
+; (display (top (empty-stack))) (newline)
+; (display (top (pop stack))) (newline)
+; (display (pop (empty-stack))) (newline)
+
+; ---------- Exercise 2.24 ----------
+(define-datatype bintree bintree?
+    (leaf-node
+        (num integer?))
+    (interior-node
+        (key symbol?)
+        (left bintree?)
+        (right bintree?)))
+
+(define bintree-to-list
+    (lambda (tree)
+        (cases bintree tree
+            (leaf-node (num) (list `leaf-node num))
+            (interior-node (key left right) 
+                (list `interior-node key 
+                    (bintree-to-list left) 
+                    (bintree-to-list right))))))
+
+
+(define t1 
+    (interior-node `a 
+        (interior-node `b 
+            (leaf-node 3) (leaf-node 4))
+        (leaf-node 5)))
+
+(display (bintree-to-list (interior-node `a (leaf-node 3) (leaf-node 4))))(newline)
+(display (bintree-to-list t1))(newline)

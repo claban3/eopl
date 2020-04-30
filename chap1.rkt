@@ -85,5 +85,6 @@
             (append (scalar-cross (car sos1) sos2) (product (cdr sos1) sos2)))))
 
 
-(display (scalar-cross `x `(a b c d))) (newline)
-(display (product `(x y z x) `(a b c))) (newline)
+; (display (scalar-cross `x `(a b c d))) (newline)
+; (display (product `(x y z x) `(a b c))) (newline)
+
