@@ -206,5 +206,85 @@
             (leaf-node 3) (leaf-node 4))
         (leaf-node 5)))
 
-(display (bintree-to-list (interior-node `a (leaf-node 3) (leaf-node 4))))(newline)
-(display (bintree-to-list t1))(newline)
+; (display (bintree-to-list (interior-node `a (leaf-node 3) (leaf-node 4))))(newline)
+; (display (bintree-to-list t1))(newline)
+
+; ---------- Exercise 2.26 ----------
+
+(define list-type?
+    (lambda (pred?)
+        (lambda (lst)
+            (if (eqv? lst `())
+                #t
+                (if (pred? (car lst))
+                    (list-type? (cdr lst))
+                    #f)))))
+        
+(define-datatype red-blue-tree red-blue-tree?
+    (red-node
+        (left red-blue-tree?)
+        (right red-blue-tree?))
+    (blue-node
+        (subtree-list (list-type? red-blue-tree?)))
+    (leaf-node 
+        (num integer?)))
+
+(define replace-leaf-red-count-list
+    (lambda (subtree-list n)
+        (if (eqv? subtree-list `())
+            `()
+            (list 
+                (replace-leaf-red-count (car subtree-list) n)
+                (replace-leaf-red-count-list (cdr subtree-list) n)))))
+
+(define replace-leaf-red-count
+    (lambda (tree n)
+        (cases red-blue-tree tree
+            (leaf-node (num) (leaf-node n))
+            (red-node (left right) 
+                (red-node
+                    (replace-leaf-red-count left (+ 1 n))
+                    (replace-leaf-red-count right (+ 1 n))))
+            (blue-node (subtree-list) (blue-node (replace-leaf-red-count-list subtree-list n))))))
+
+(define t2 (red-node (leaf-node 5) 
+    (blue-node 
+        (list (red-node (leaf-node 100) (leaf-node 100)) (leaf-node 10)))))
+; (display (replace-leaf-red-count t2 0))(newline)
+
+; ---------- Exercise 2.31 ----------
+(define-datatype prefix-exp prefix-exp?
+    (const-exp
+        (num integer?))
+    (diff-exp
+        (operand1 prefix-exp?)
+        (operand2 prefix-exp?)))
+
+(define parse-prefix-exp
+    (lambda (prefix-list)
+        (let 
+            ((head (car prefix-list))
+            (tail (cdr prefix-list)))
+            (cond
+                ((integer? head) 
+                    (cons (const-exp head) tail))
+                ((eqv? head `-)
+                    (let* 
+                        ((operand-1-rest (parse-prefix-exp tail))
+                        (operand-1 (car operand-1-rest))
+                        (operand-2-rest (parse-prefix-exp (cdr operand-1-rest)))
+                        (operand-2 (car operand-2-rest))
+                        (rest-2 (cdr operand-2-rest)))
+                        (cons (diff-exp operand-1 operand-2) rest-2)))))))
+
+(define parse-prefix-list
+    (lambda (prefix-list)
+        (let* 
+            ((expr-rest (parse-prefix-exp prefix-list))
+            (expr (car expr-rest))
+            (rest (cdr expr-rest)))
+            (if (null? rest)
+                expr
+                (error `parse-prefix-list "Bad return ~s" rest)))))
+
+; (display (parse-prefix-list `(- - 3 2 - 4 - 12 7)))(newline)
