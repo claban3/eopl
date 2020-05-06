@@ -32,7 +32,15 @@
                     (num2 (expval->num val2)))
                 (num-val
                 (- num1 num2)))))
+        
+        ; ---------- Exercise 3.6 ----------
+        (minus (expr)
+            (let* ((val (value-of expr env))
+                (num (expval->num val)))
+                (- 0 num)))
 
+        ; ---------- Exercise 3.7 ---------- 
+        
         (zero?-exp (exp1)
             (let ((val1 (value-of exp1 env)))
             (let ((num1 (expval->num val1)))
