@@ -1,7 +1,8 @@
-(module environment
+(module environment (lib "eopl.ss" "eopl")
 
-    (require (lib "eopl.ss" "eopl"))
     (require "data-structures.scm")
+    (require "drscheme-init.scm")
+
     (provide (all-defined-out))
 
     (define empty-env (lambda () `()))
@@ -23,7 +24,7 @@
 
     (define report-no-binding-found
         (lambda (search-var)
-            (error `apply-env "No binding for ~s" search-var)))
+            (eopl:error `apply-env "No binding for ~s" search-var)))
 
     (define init-env
         (extend-env `i (num-val 1)

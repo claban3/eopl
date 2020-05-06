@@ -1,6 +1,5 @@
-(module data-structures
+(module data-structures (lib "eopl.ss" "eopl")
 
-    (require (lib "eopl.ss" "eopl"))
     (provide (all-defined-out))
     
     (define-datatype expval expval?

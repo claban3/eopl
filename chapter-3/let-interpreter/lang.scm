@@ -1,7 +1,6 @@
-(module lang
+(module lang (lib "eopl.ss" "eopl")
 
-    (lib "eopl.ss" "eopl")                
-
+    (require "drscheme-init.scm")
     (provide (all-defined-out))
 
     (define the-lexical-spec
