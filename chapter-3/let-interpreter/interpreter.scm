@@ -16,6 +16,16 @@
         (a-program (exp1)
             (value-of exp1 (init-env))))))
 
+    (define eval-cast
+        (lambda (exp1 exp2 env)
+            (lambda (operator)
+                (let ((val1 (value-of exp1 env))
+                    (val2 (value-of exp2 env)))
+                (let ((num1 (expval->num val1))
+                    (num2 (expval->num val2)))
+                    (num-val
+                    (operator num1 num2)))))))
+
     ;; value-of : Exp * Env -> ExpVal
     (define value-of
     (lambda (exp env)
@@ -24,22 +34,23 @@
         (const-exp (num) (num-val num))
         
         (var-exp (var) (apply-env env var))
-        
-        (diff-exp (exp1 exp2)
-            (let ((val1 (value-of exp1 env))
-                (val2 (value-of exp2 env)))
-            (let ((num1 (expval->num val1))
-                    (num2 (expval->num val2)))
-                (num-val
-                (- num1 num2)))))
-        
-        ; ---------- Exercise 3.6 ----------
-        (minus (expr)
-            (let* ((val (value-of expr env))
-                (num (expval->num val)))
-                (- 0 num)))
 
-        ; ---------- Exercise 3.7 ---------- 
+        (diff-exp (exp1 exp2)
+            ((eval-cast exp1 exp2 env) - ))
+
+        (minus (exp1)
+            (let* ((val (value-of exp1 env))
+                (num (expval->num val)))
+                (num-val (- 0 num))))
+
+        (plus-exp (exp1 exp2)
+            ((eval-cast exp1 exp2 env) + ))
+        
+        (mult-exp (exp1 exp2)
+            ((eval-cast exp1 exp2 env) * ))
+        
+        (div-exp (exp1 exp2)
+            ((eval-cast exp1 exp2 env) / ))
         
         (zero?-exp (exp1)
             (let ((val1 (value-of exp1 env)))
@@ -59,5 +70,24 @@
             (value-of body
                 (extend-env var val1 env))))
 
+        (emptylist-exp () (emptylist))
+
+        (cons-exp (exp1 exp2)
+            (let ((val1 (value-of exp1 env))
+                  (val2 (value-of exp2 env)))                
+                (pair-val val1 val2)))
+
+        (car-exp (exp1)
+            (let ((val1 (value-of exp1 env)))
+            (let ((pair1 (expval->pair val1)))
+                (car pair1))))
+
+        (cdr-exp (exp1)
+            (let ((val1 (value-of exp1 env)))
+            (let ((pair1 (expval->pair val1)))
+                (cdr pair1))))
+
         )))
+
+
 )

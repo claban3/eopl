@@ -6,15 +6,17 @@
 
     (define test-list
         '(
-
         ;; simple arithmetic
         (positive-const "11" 11)
         (negative-const "-33" -33)
         (simple-arith-1 "-(44,33)" 11)
-        (minus "minus(-(minus(4),9))" 14)
+        (minus "minus(-9)" 9)
+
         ;; nested arithmetich
         (nested-arith-left "-(-(44,33),22)" -11)
         (nested-arith-right "-(55, -(22,11))" 44)
+        (nested-arith-left-plus "+(+(44,33),22)" 99)
+        (nested-arith-right-plus "+(55, +(22,11))" 88)
 
         ;; simple variables
         (test-var-1 "x" 10)
@@ -54,6 +56,16 @@
         (simple-nested-let "let x = 3 in let y = 4 in -(x,y)" -1)
         (check-shadowing-in-body "let x = 3 in let x = 4 in x" 4)
         (check-shadowing-in-rhs "let x = 3 in let x = -(x,1) in x" 2)
+
+        ;; list processing
+        (const-cons "cons(11,12)" (11 . 12))
+        (empty-list "emptylist" ())
+        (cons-emptylist "cons(1,emptylist)" (1))
+        (eval-let-cons "let x = 4 in cons(x,cons(cons(-(x,1),emptylist),emptylist))" (4 (3)))
+        (car-list-1 "car(cons(11,12))" 11)
+        (car-list-2 "let x = 4 in car(cons(x,cons(cons(-(x,1),emptylist),emptylist)))" 4)
+        (cdr-list-1 "cdr(cons(11,12))" 12)
+        (cdr-list-1 "cdr(cons(11,cons(12,13)))" (12 . 13))
 
     ))
 )

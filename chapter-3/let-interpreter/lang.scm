@@ -11,20 +11,36 @@
             symbol)
             (number (digit (arbno digit)) number)
             (number ("-" digit (arbno digit)) number)))
-  
+
     (define the-grammar
         '((program (expression) a-program)
 
             (expression (number) const-exp)
             
+            ; (expression 
+            ; ("(" (separated-list expression ",") ")")
+            ; s-expression)
+
             (expression
             ("-" "(" expression "," expression ")")
             diff-exp)
-            
+
+            (expression
+            ("+" "(" expression "," expression ")")
+            plus-exp)
+
+            (expression
+            ("*" "(" expression "," expression ")")
+            mult-exp)
+
+            (expression
+            ("/" "(" expression "," expression ")")
+            div-exp)
+
             (expression
             ("minus" "(" expression ")")
             minus)
-                        
+
             (expression
             ("zero?" "(" expression ")")
             zero?-exp)
@@ -37,8 +53,26 @@
 
             (expression
             ("let" identifier "=" expression "in" expression)
-            let-exp)))
-  
+            let-exp)
+
+            (expression
+            ("emptylist")
+            emptylist-exp)
+
+            (expression
+            ("cons" "(" expression "," expression ")")
+            cons-exp)
+
+            (expression
+            ("car" "(" expression ")")
+            car-exp)
+
+            (expression
+            ("cdr" "(" expression ")")
+            cdr-exp)
+        ))
+
+
     (sllgen:make-define-datatypes the-lexical-spec the-grammar)
 
     (define show-the-datatypes
