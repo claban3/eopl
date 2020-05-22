@@ -16,7 +16,7 @@
         (nested-arith-left "-(-(44,33),22)" -11)
         (nested-arith-right "-(55, -(22,11))" 44)
         (nested-arith-left-plus "+(+(44,33),22)" 99)
-        (nested-arith-right-plus "+(55, +(22,11))" 88)
+        (nested-arith-right-plus "+(55,+(22,11))" 88)
 
         ;; simple variables
         (test-var-1 "x" 10)
@@ -73,5 +73,30 @@
 
         ;; writting procedures
         (simple-lambda "(proc (x) -(x,1) 2)" 1)
+        (arg-list-lambda "(proc (x,y) -(x,y) 3 2)" 1)
+        (u-combinator "let makemult = proc (maker)
+            proc (x)
+            if zero?(x)
+            then 0
+            else -(((maker maker) -(x,1)), -4)
+            in let times4 = proc (x) ((makemult makemult) x)
+            in (times4 3)" 12)
+        (5-factorial "let makefact = proc (maker)
+            proc (x)
+            if zero?(x)
+            then 1
+            else *(((maker maker) -(x,1)), x)
+            in let factorial = proc (x) ((makefact makefact) x)
+            in (factorial 5)" 120)   
+        
+        (test-old-closure-scope "let func = proc (q) -(q,x) in (func 2)" -8)
+        (test-static-binding "let a = 3
+            in let p = proc (x) -(x,a)
+            in let a = 5
+            in -(a,(p 2))" 6)
+        (test-dynamic-binding "let a = 3
+            in let p = proc (x) -(x,a)
+            in let a = 5
+            in -(a,(p 2))" 8)
     ))
 )

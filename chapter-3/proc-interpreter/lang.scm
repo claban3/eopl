@@ -72,15 +72,15 @@
 			cdr-exp)
 
 			(expression
-			("list" "("(separated-list expression ",") ")")
+			("list" "(" (separated-list expression ",") ")")
 			list-exp)
 
 			(expression
-			("proc" "(" identifier ")" expression)
+			("proc" "(" (separated-list identifier ",") ")" expression)
 			proc-exp)
 
 			(expression
-			("(" expression expression ")")
+			("(" expression (arbno expression) ")")
 			call-exp)
 		))
 

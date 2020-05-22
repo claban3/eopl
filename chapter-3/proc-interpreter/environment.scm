@@ -4,7 +4,7 @@
     ;; data-structures.scm. 
 
     (require "data-structures.scm")
-    (provide init-env empty-env extend-env apply-env)
+    (provide init-env empty-env extend-env apply-env extend-env-list)
 
     ;;;;;;;;;;;;;;;; initial environment ;;;;;;;;;;;;;;;;
     (define init-env 
@@ -30,6 +30,19 @@
     (define extend-env
         (lambda (sym val old-env)
             (extended-env-record sym val old-env)))
+    
+    (define extend-env-list
+        (lambda (syms vals old-env)
+            (cond 
+                ((and (null? syms) (null? vals))
+                    old-env)
+                ((and (not (null? syms)) (not (null? syms)))
+                    (extend-env 
+                        (car syms) 
+                        (car vals) 
+                        (extend-env-list (cdr syms) (cdr vals) old-env)))
+                (else eopl:error 'extend-env-list 
+                    "Unequal length of syms and vals: ~s ~s" syms vals))))
 
     (define apply-env
         (lambda (env search-sym)
