@@ -105,12 +105,12 @@
                 (cons-list exp-list env))
 
             (proc-exp (var-list body)
-                (proc-val (procedure var-list body env)))
+                (proc-val (procedure var-list body)))
 
             (call-exp (rator rand-list)
                 (let ((proc (expval->proc (value-of rator env)))
                     (args (map ((curry2 value-of) env) rand-list)))
-                        (apply-procedure proc args)))
+                        (apply-procedure proc args env)))
 
         )))
 
@@ -123,12 +123,12 @@
     ;; Instead of using recursive data types, we are using 
     ;; scheme's procedural datatype. 
     (define procedure 
-        (lambda (var-list body env)
-            (lambda (val-list)
+        (lambda (var-list body)
+            (lambda (val-list env)
                 (value-of body (extend-env-list var-list val-list env)))))
 
     (define apply-procedure
-        (lambda (proc args)
-            (proc args)))
+        (lambda (proc args env)
+            (proc args env)))
 
 )
