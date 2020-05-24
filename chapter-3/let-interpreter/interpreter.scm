@@ -26,6 +26,15 @@
                     (num-val
                     (operator num1 num2)))))))
 
+    (define cons-list   
+        (lambda (exp-list env)
+            (if (null? exp-list)
+                (emptylist)
+                (let ((val-car (value-of (car exp-list) env)))
+                    (pair-val 
+                        val-car 
+                        (cons-list (cdr exp-list) env))))))
+
     ;; value-of : Exp * Env -> ExpVal
     (define value-of
     (lambda (exp env)
@@ -59,6 +68,12 @@
                 (bool-val #t)
                 (bool-val #f)))))
                 
+        (null?-exp (exp1)
+            (let ((val1 (value-of exp1 env)))
+                (cases expval val1
+                    (emptylist () (bool-val #t))
+                    (else (bool-val #f)))))
+            
         (if-exp (exp1 exp2 exp3)
             (let ((val1 (value-of exp1 env)))
             (if (expval->bool val1)
@@ -86,6 +101,9 @@
             (let ((val1 (value-of exp1 env)))
             (let ((pair1 (expval->pair val1)))
                 (cdr pair1))))
+
+        (list-exp (exp-list)
+            (cons-list exp-list env))
 
         )))
 

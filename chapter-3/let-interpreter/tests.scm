@@ -66,6 +66,9 @@
         (car-list-2 "let x = 4 in car(cons(x,cons(cons(-(x,1),emptylist),emptylist)))" 4)
         (cdr-list-1 "cdr(cons(11,12))" 12)
         (cdr-list-1 "cdr(cons(11,cons(12,13)))" (12 . 13))
-
+        (null-pred-true "if null?(emptylist) then 3 else 4" 3)
+        (null-pred-false "if null?(cons(3,4)) then 3 else 4" 4)
+        (list-consts "list(1,2,3)" (1 2 3))
+        (list-exprs "let x = 4 in list(x, -(x,1), -(x,3))" (4 3 1))
     ))
 )
